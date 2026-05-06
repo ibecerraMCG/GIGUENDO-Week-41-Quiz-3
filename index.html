@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 41 Practice Quiz 3</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }[data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }[data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }[data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }[data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }[data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }
+
+        [data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+            #reveal-all-container { justify-content: flex-start !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 41 Practice Quiz 3</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData =[
+            // --- Section 1: Fluid and Electrolyte Clinical Correlations ---
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO1: Describe the mechanisms that may lead to hyponatremia and hypernatremia.",
+                question: "A 58-year-old man with a history of severe congestive heart failure is admitted to the hospital with worsening edema, ascites, and dyspnea. Routine laboratory testing reveals a serum sodium concentration of 128 mEq/L (hyponatremia). Which of the following is the fundamental underlying mechanism driving the development of hypoosmolality and hyponatremia in this patient?",
+                options: {
+                    A: "An absolute deficiency of total body sodium",
+                    B: "An excess of water in relation to solute",
+                    C: "Extensive third spacing of fluids into the peritoneal cavity",
+                    D: "Primary failure of the hypothalamic osmoreceptors",
+                    E: "Severe, uncompensated gastrointestinal fluid loss"
+                },
+                correctAnswer: "B",
+                rationale: "Hyponatremia usually reflects hypo-osmolality. The common denominator in almost all hypoosmolal states (including hypervolemic states like congestive heart failure) is water retention leading to an excess of water in relation to solute.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 3: 'Water retention leading to an excess of water in relation to solute is the Common denominator in almost all hypoosmolal states.'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO1: Describe the mechanisms that may lead to hyponatremia and hypernatremia.",
+                question: "A 75-year-old woman is brought to the emergency department from a nursing home. She has advanced dementia and is bedbound. Laboratory studies reveal a serum sodium concentration of 158 mEq/L. The patient has had no access to free water for two days. According to physiological principles, hypernatremia can be generated by sodium retention or which of the following?",
+                options: {
+                    A: "Excessive secretion of antidiuretic hormone",
+                    B: "Excessive urinary loss of sodium",
+                    C: "Massive intracellular shifts of sodium",
+                    D: "Pure water loss (deficit)",
+                    E: "Shift of water into the extracellular space"
+                },
+                correctAnswer: "D",
+                rationale: "Hypernatremia represents a hyperosmolal state that can be generated fundamentally from either water loss (water deficit) or Na+ retention. In an elderly patient with poor water access due to debility, inadequate intake leads to a pure water deficit.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slides 19 & 20: 'Generation of Hypernatremia • Hypernatremia Can be generated from water loss or Na+ retention.' and 'Causes of hypernatremia... Pure Water deficit • Inadequate intake (e.g., Poor water access due to debility...)'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO2: Discuss the evaluation of hyponatremia and hypernatremia.",
+                question: "A 45-year-old woman is found to have a serum sodium of 125 mEq/L on a routine metabolic panel (low). The physician begins a systematic diagnostic evaluation to determine the etiology. According to standard evaluation algorithms, which of the following is the most appropriate first step in evaluating this patient's hyponatremia?",
+                options: {
+                    A: "Assess urine sodium concentration",
+                    B: "Check serum thyroid-stimulating hormone (TSH)",
+                    C: "Determine the patient's volume status (ECF status)",
+                    D: "Measure plasma osmolality",
+                    E: "Obtain a CT scan of the head"
+                },
+                correctAnswer: "D",
+                rationale: "The first step in the evaluation of hyponatremia is to measure plasma osmolality (normal 275-290 mOsm/kg) to differentiate between hypertonic, isotonic, and hypotonic hyponatremia, as true hyponatremic patients are hypotonic.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 12: 'Evaluation of Hyponatremia Step 1: Plasma Osmolality (275 mOsm to 290 mOsm/kg) • Differentiate between hypertonic, isotonic, and hypotonic hyponatremia. • True hyponatremic patients are hypotonic.'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO2: Discuss the evaluation of hyponatremia and hypernatremia.",
+                question: "A 60-year-old man presents with severe hypernatremia. To systematically evaluate the cause of his condition, the physician assesses his extracellular fluid volume (ECFV) and finds it to be visibly decreased (hypovolemic). Which of the following is the next most appropriate parameter to measure to differentiate between renal and extrarenal causes of his hypotonic fluid deficit?",
+                options: {
+                    A: "Plasma osmolality",
+                    B: "Serum glucose",
+                    C: "Serum potassium",
+                    D: "Urine sodium and urine osmolality",
+                    E: "Urine specific gravity"
+                },
+                correctAnswer: "D",
+                rationale: "According to the diagnostic algorithm for hypernatremia, if a patient has decreased ECFV (hypotonic fluid deficit), the clinician should next evaluate urine sodium and urine osmolality to differentiate between a renal hypotonic fluid loss (e.g., diuretics, where urine Na > 20 mEq/L) and an extrarenal loss (e.g., skin, GI, where urine Na < 10 mEq/L).",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 27: 'Hypernatremia - Diagnosis [Flowchart] -> Decreased ECFV -> Hypotonic fluid deficit -> Urine sodium [and] Urine osmolality ->[Branches to] Renal hypotonic fluid loss OR Extrarenal hypotonic fluid loss'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO3: Describe the use of plasma sodium, plasma osmolality, urine sodium, and urine osmolality in hyponatremia and hypernatremia.",
+                question: "A 30-year-old man with schizophrenia presents to the emergency department after drinking over 15 liters of water in the past 24 hours. His serum sodium is 118 mEq/L. Plasma osmolality confirms a true hypotonic state. Which of the following urine osmolality findings would most strongly indicate primary polydipsia in this patient?",
+                options: {
+                    A: "Less than 100 mOsm/kg",
+                    B: "Between 200 and 300 mOsm/kg",
+                    C: "Exactly 300 mOsm/kg",
+                    D: "Greater than 400 mOsm/kg",
+                    E: "Greater than 700 mOsm/kg"
+                },
+                correctAnswer: "A",
+                rationale: "In step 2 of hyponatremia evaluation, a urine osmolality less than 100 mOsm/kg indicates appropriate suppression of ADH in the face of massive water intake, pointing to primary polydipsia or a reset osmostat.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 12: 'Step 2: Urine Osmolality • Urine osmolality less than 100 mOsm/kg indicates primary polydipsia or reset osmostat.'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO3: Describe the use of plasma sodium, plasma osmolality, urine sodium, and urine osmolality in hyponatremia and hypernatremia.",
+                question: "A 50-year-old woman is evaluated for hypovolemic hyponatremia. The physician measures her urine sodium concentration to distinguish the source of her fluid loss. Her urine sodium is reported as 5 mmol/L. This value strongly points to which of the following mechanisms?",
+                options: {
+                    A: "Active diuretic use",
+                    B: "Cortisol deficiency",
+                    C: "Extrarenal loss of fluid (e.g., remote vomiting)",
+                    D: "Renal salt-wasting nephropathy",
+                    E: "Syndrome of inappropriate antidiuretic hormone (SIADH)"
+                },
+                correctAnswer: "C",
+                rationale: "In step 4 of hyponatremia evaluation, a urine sodium less than 10 mmol/L indicates an extrarenal loss of fluid (such as remote vomiting or diarrhea), because the intact kidneys are appropriately holding onto sodium to restore volume. A urine sodium >20 mmol/L would suggest a renal loss (e.g., diuretics, salt wasting).",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 13: 'Step 4: Urine Sodium Concentration • Urine sodium less than 10 mmol/L indicates extrarenal loss of fluid (remote diuretic use and remote vomiting).'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO4: Identify common causes of hyponatremia and hypernatremia.",
+                question: "A 65-year-old man is started on a new medication for hypertension. Two weeks later, routine laboratory testing reveals a serum sodium level of 126 mEq/L. Which of the following classes of diuretics represents virtually the only clinical setting in which hyponatremia is produced by the loss of effective solute (Na+ and K+) in excess of water?",
+                options: {
+                    A: "Carbonic anhydrase inhibitors",
+                    B: "Loop diuretics",
+                    C: "Osmotic diuretics",
+                    D: "Potassium-sparing diuretics",
+                    E: "Thiazide diuretics"
+                },
+                correctAnswer: "E",
+                rationale: "Almost all cases of diuretic-induced hyponatremia are due to thiazide diuretics, not loop diuretics. Thiazides act in the cortex and do not interfere with urinary concentration or ADH's ability to promote water retention, causing loss of Na/K in excess of water.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 10: 'Almost all cases of diuretic-induced hyponatremia are due to thiazide, not loop diuretics ... Use of thiazide diuretics represents virtually the only clinical setting in which hyponatremia can be produced in part by the loss of effective solute (Na+ & K+) in excess of water.'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO4: Identify common causes of hyponatremia and hypernatremia.",
+                question: "A 40-year-old patient with bipolar disorder develops severe polyuria and hypernatremia. The physician diagnoses nephrogenic diabetes insipidus secondary to long-term lithium therapy. The molecular mechanism of this specific drug-induced urinary concentration defect involves the dysregulation of which of the following systems in the principal cells of the collecting duct?",
+                options: {
+                    A: "Aquaporin system",
+                    B: "Calcium-sensing receptor",
+                    C: "Epithelial sodium channels (ENaC)",
+                    D: "Na+/K+/2Cl- cotransporter",
+                    E: "V1 vascular receptors"
+                },
+                correctAnswer: "A",
+                rationale: "Lithium-induced nephrogenic diabetes insipidus (NDI) promotes polyuria by counteracting intracellular vasopressin signaling, leading to dysregulation of the aquaporin system (specifically Aquaporin-2) in the principal cells of the collecting duct.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 24: 'Li+-induced NDI... The molecular mechanisms of Li+-related urinary concentration defect involves dysregulation of the aquaporin system in principal cells of the collecting duct.'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO5: Discuss clinical manifestations of hyponatremia and hypernatremia.",
+                question: "A 70-year-old man is brought to the emergency department from a long-term care facility with severe dehydration. His serum sodium is 165 mEq/L. Because hypernatremia causes cellular dehydration in the brain, the clinical manifestations are primarily neurologic. Which of the following sets of symptoms represents the early signs of hypernatremia?",
+                options: {
+                    A: "Coma and death",
+                    B: "Deep venous thrombosis and pulmonary embolism",
+                    C: "Lethargy, weakness, and irritability",
+                    D: "Muscle spasticity and focal neurologic deficits",
+                    E: "Twitching and seizures"
+                },
+                correctAnswer: "C",
+                rationale: "The symptoms of hypernatremia are primarily neurologic. Early symptoms include lethargy, weakness, and irritability. Late symptoms include twitching, seizures, coma, and death.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 26: 'Hypernatremia - Symptoms ... Primarily neurologic: Early - Lethargy - Weakness - Irritability | Late - Twitching - Seizures - Coma - Death'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO5: Discuss clinical manifestations of hyponatremia and hypernatremia.",
+                question: "A 55-year-old woman with a history of severe alcoholism presents with a serum sodium of 110 mEq/L. The physician decides to carefully restrict the rate of sodium correction to avoid inducing osmotic demyelination syndrome (ODS). Along with her alcoholism, which of the following is a recognized risk factor that places her at high risk for ODS during correction?",
+                options: {
+                    A: "Hypercalcemia",
+                    B: "Hyperglycemia",
+                    C: "Hyperkalemia",
+                    D: "Hypokalemia",
+                    E: "Hypothyroidism"
+                },
+                correctAnswer: "D",
+                rationale: "Patients at high risk for osmotic demyelination syndrome (ODS) include those with hypokalemia, liver disease, malnutrition, and alcoholism. For these high-risk patients, correction must be limited to less than 8 mEq/L in any 24-hour period.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 17: 'Risk factors for osmotic demyelination syndrome (ODS): Hypokalemia, Liver disease, Malnutrition, Alcoholism.'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO6: Describe the management of hyponatremia and hyponatremia (hypernatremia).",
+                question: "A 35-year-old marathon runner collapses at the finish line and experiences a generalized tonic-clonic seizure. In the medical tent, his serum sodium is found to be low at 112 mEq/L. Which of the following is the most appropriate initial management for this severely symptomatic hyponatremic patient?",
+                options: {
+                    A: "100 mL IV bolus of 3% sodium chloride",
+                    B: "1000 mL IV bolus of 0.45% normal saline",
+                    C: "1000 mL IV bolus of 0.9% normal saline",
+                    D: "Oral fluid restriction to less than 1 L per day",
+                    E: "Tolvaptan 15 mg orally"
+                },
+                correctAnswer: "A",
+                rationale: "For patients with acute, severely symptomatic hyponatremia (e.g., presenting with seizures), the immediate management is the administration of hypertonic saline (3% sodium chloride) as a 100 mL IV bolus, which can be repeated up to twice if symptoms persist.",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 14: 'Management - Acute Symptomatic Hyponatremia • Severely symptomatic hyponatremia: Administer 3% sodium chloride; 100 mL intravenous (IV) bolus (repeat up to twice if symptoms persist).'"
+            },
+            {
+                section: "Fluid and Electrolyte Clinical Correlations",
+                fullLO: "LO6: Describe the management of hyponatremia and hyponatremia (hypernatremia).",
+                question: "An 82-year-old man presents with an insidious onset of lethargy and a serum sodium of 160 mEq/L. The physician determines that he has chronic hypernatremia. To safely correct his sodium and prevent potential osmotic demyelination and brain edema, the targeted rate of sodium correction should NOT exceed which of the following limits?",
+                options: {
+                    A: "0.5 mmol/L/hour",
+                    B: "1.0 mmol/L/hour",
+                    C: "2.5 mmol/L/hour",
+                    D: "5.0 mmol/L/hour",
+                    E: "10.0 mmol/L/hour"
+                },
+                correctAnswer: "A",
+                rationale: "For chronic hypernatremic states, the target correction should be slow, specifically <= 0.5 mmol/L/hour (<8-10 mmol/L/24 hours), to safely avoid brain edema and prevent potential osmotic demyelination. Rapid onset hypernatremia can be corrected slightly faster (1 mmol/L/hour).",
+                source: "Fluid and Electrolyte Clinical Correlations PDF, slide 29: 'Rate of Correction ... Chronic hypernatremic states, target correction should be no <= 0.5mmol/L/hour (<8-10 mmol/L/24 hours) to avoid brain edema and prevent potential osmotic demyelination.'"
+            },
+
+            // --- Section 2: Sepsis ---
+            {
+                section: "Sepsis",
+                fullLO: "LO1: Recognize the etiology of sepsis & septic shock.",
+                question: "A 65-year-old patient in the intensive care unit develops septic shock. Blood cultures eventually grow a Gram-negative organism. Among the bacteria causing sepsis, Gram-negative organisms generally confer a higher mortality rate than Gram-positives. Which of the following specific organisms is associated with the highest mortality rate (approx. 77%) in this setting?",
+                options: {
+                    A: "Candida albicans",
+                    B: "Escherichia coli",
+                    C: "Klebsiella pneumoniae",
+                    D: "Pseudomonas aeruginosa",
+                    E: "Staphylococcus aureus"
+                },
+                correctAnswer: "D",
+                rationale: "Sepsis etiology is mainly bacterial, with Gram-negative organisms accounting for ~45% and carrying a higher mortality than Gram-positive (~35%). Among these, Pseudomonas aeruginosa is associated with a particularly high mortality rate of 77%.",
+                source: "Sepsis PDF, slide 6: 'Etiology: Mainly Bacteria ... Mortality • Gram (-) > Gram (+) • Pseudomonas aeruginosa (77%)'"
+            },
+            {
+                section: "Sepsis",
+                fullLO: "LO1: Recognize the etiology of sepsis & septic shock.",
+                question: "A 24-year-old man is brought to the emergency department with fever, chills, and severe hypotension. His medical history is notable for a trauma-induced splenectomy 5 years ago. Because of this special circumstance, he is at exceptionally high risk for fulminant sepsis caused by which of the following organisms?",
+                options: {
+                    A: "Candida spp.",
+                    B: "Histoplasma capsulatum",
+                    C: "Pneumocystis jirovecii (PCP)",
+                    D: "Pseudomonas aeruginosa",
+                    E: "Streptococcus pneumoniae"
+                },
+                correctAnswer: "E",
+                rationale: "Patients who have undergone a splenectomy are highly susceptible to severe infections from encapsulated organisms. The classic encapsulated bacteria causing high-yield (HYI) post-splenectomy sepsis are S. pneumoniae, H. influenzae, and N. meningitidis.",
+                source: "Sepsis PDF, slide 23: 'Nota Bene: Special Circumstances ... Splenectomy (HYI): Encapsulated Organisms S. pneumoniae, H. influenzae, N. meningitidis'"
+            },
+            {
+                section: "Sepsis",
+                fullLO: "LO2: Summarize the pathogenesis of sepsis & septic shock.",
+                question: "A patient develops septic shock secondary to a severe Gram-negative bacterial infection. The initial trigger for the massive inflammatory cascade in this patient is the binding of lipopolysaccharide (LPS) to specific pattern recognition receptors on the host's innate immune cells. Which of the following receptors specifically recognizes LPS?",
+                options: {
+                    A: "C-type lectin receptor",
+                    B: "G-protein–coupled receptor",
+                    C: "Toll-like receptor 2 (TLR-2)",
+                    D: "Toll-like receptor 4 (TLR-4)",
+                    E: "TNF receptor"
+                },
+                correctAnswer: "D",
+                rationale: "The pathogenesis of sepsis involves microbial cell wall constituents engaging receptors on innate immune cells. Toll-Like Receptor 4 (TLR-4) specifically recognizes lipopolysaccharide (LPS), a major component of Gram-negative bacteria, whereas TLR-2 recognizes Gram-positive components like peptidoglycan and lipoteichoic acid.",
+                source: "Sepsis PDF, slide 10: 'TOLL-Like Receptors ... TLR-4 recognizes LPS ! Gram (-)'"
+            },
+            {
+                section: "Sepsis",
+                fullLO: "LO2: Summarize the pathogenesis of sepsis & septic shock.",
+                question: "In the pathogenesis of septic shock, widespread endothelial activation and the release of pro-inflammatory cytokines lead to diffuse intravascular coagulation (DIC). Which of the following best describes the specific derangement in the coagulation cascade that drives this procoagulant state?",
+                options: {
+                    A: "Decreased expression of Tissue Factor by monocytes",
+                    B: "Increased expression of Plasminogen Activator Inhibitor-1 (PAI-1)",
+                    C: "Increased production of endothelial Anticoagulant Factors (e.g., TFPI)",
+                    D: "Suppression of Neutrophil Extracellular Traps (NETs)",
+                    E: "Systemic activation of factor VIII exclusively"
+                },
+                correctAnswer: "B",
+                rationale: "The procoagulant state in DIC during sepsis is driven by increased Tissue Factor production, decreased production of anticoagulant factors (like TFPI, thrombomodulin, protein C), and reduced fibrinolysis due to increasing PAI-1 expression.",
+                source: "Sepsis PDF, slide 14: 'Induction of Procoagulant State and DIC ... They also reduce fibrinolysis by increasing PAI-1 expression'"
+            },
+            {
+                section: "Sepsis",
+                fullLO: "LO3: Discuss clinical manifestations of sepsis & septic shock.",
+                question: "A 50-year-old woman is evaluated in the intensive care unit for profound hypotension. To distinguish the etiology of her shock clinically, the physician notes the temperature and appearance of her extremities. In contrast to hypovolemic or cardiogenic shock, the skin of a patient in the early stages of septic shock is most likely to be:",
+                options: {
+                    A: "Cool and clammy",
+                    B: "Cyanotic and mottled",
+                    C: "Pale and diaphoretic",
+                    D: "Warm and flushed",
+                    E: "Yellow and jaundiced"
+                },
+                correctAnswer: "D",
+                rationale: "While hypovolemic and cardiogenic shock present with cool, clammy, cyanotic skin due to intense peripheral vasoconstriction, septic shock is uniquely characterized by profound peripheral vasodilation, resulting in skin that is warm and flushed.",
+                source: "Sepsis PDF, slide 16: 'Clinical Features ... Hypovolemic and Cardiogenic Shock: Hypotension, weak rapid pulse, tachypnea, and cool, clammy, cyanotic skin. ... Septic Shock: Skin is warm and flushed due to peripheral vasodilation.'"
+            },
+            {
+                section: "Sepsis",
+                fullLO: "LO3: Discuss clinical manifestations of sepsis & septic shock.",
+                question: "A 70-year-old man on a medical-surgical floor develops a fever and altered mental status. The rapid response team utilizes the quick SOFA (qSOFA) score to predict his risk of inpatient mortality and assess for sepsis. Which of the following clinical findings would earn him exactly 1 point on the qSOFA scale?",
+                options: {
+                    A: "Heart rate > 100 beats/min",
+                    B: "Respiratory rate > 22 breaths/min",
+                    C: "Serum creatinine > 2.0 mg/dL",
+                    D: "Serum lactate > 4 mmol/L",
+                    E: "Systolic blood pressure < 120 mm Hg"
+                },
+                correctAnswer: "B",
+                rationale: "The qSOFA score is a bedside prompt used for non-ICU patients to identify those at high risk for mortality. It does not require lab results. One point is given for each of the following: Respiratory rate > 22/min, Altered mental status, and Systolic blood pressure < 100 mm Hg.",
+                source: "Sepsis PDF, slide 19: 'Quick SOFA Score (qSOFA): ... One point for each of the following: Respiratory rate >22/min – 1 point, Altered mental status – 1 point, Systolic blood pressure < 100 mmHg'"
+            },
+            {
+                section: "Sepsis",
+                fullLO: "LO4: Explain principles and rationales for management of sepsis & septic shock.",
+                question: "A 60-year-old man with a suspected community-acquired pneumonia develops septic shock. Following the four pillars of sepsis management, the physician orders empiric broad-spectrum antibiotics to cover both MRSA and Pseudomonas aeruginosa, along with atypical organisms. Which of the following antibiotic regimens is most appropriate for this patient's lung infection?",
+                options: {
+                    A: "Azithromycin monotherapy",
+                    B: "Ciprofloxacin and metronidazole",
+                    C: "Fluoroquinolone and metronidazole",
+                    D: "Vancomycin + Cefepime + Azithromycin",
+                    E: "Vancomycin monotherapy"
+                },
+                correctAnswer: "D",
+                rationale: "For empiric treatment of septic shock originating from a lung infection, broad-spectrum coverage is required. Vancomycin + Cefepime covers MRSA and Pseudomonas. For community-acquired pneumonia (CAP), Azithromycin should be added to cover atypical organisms like Legionella pneumophila.",
+                source: "Sepsis PDF, slide 21: 'Empiric Use of Broad-spectrum Antibiotics ... Vancomycin + Cefepime (4th Gen cephalosporin) Covers MRSA & Pseudomonas aeruginosa ... Add Azithromycin for CAP (e.g., Legionella pneumophila)'"
+            },
+            {
+                section: "Sepsis",
+                fullLO: "LO4: Explain principles and rationales for management of sepsis & septic shock.",
+                question: "A 45-year-old woman is admitted to the emergency department with high fever, hypotension, and a suspected intra-abdominal infection. The medical team initiates fluid resuscitation and plans to draw blood cultures. According to sepsis management guidelines, within what maximum timeframe should the empiric antibiotics be administered?",
+                options: {
+                    A: "Within 1 hour after cultures are obtained",
+                    B: "Within 4 hours of emergency department arrival",
+                    C: "Within 12 hours of the first temperature spike",
+                    D: "Only after the source control surgery is completed",
+                    E: "Only after the organism is identified by Gram stain"
+                },
+                correctAnswer: "A",
+                rationale: "A critical principle in the management of septic shock is the rapid initiation of antibiotic therapy. Guidelines recommend that antibiotics should be administered within the 1st hour after cultures are obtained.",
+                source: "Sepsis PDF, slide 22: 'Antibiotic Therapy in Septic Shock ... Antibiotics within 1st hour after cultures obtained'"
+            },
+
+            // --- Section 3: Bladder Dysfunction ---
+            {
+                section: "Bladder Dysfunction",
+                fullLO: "LO1: Define urinary incontinence and neurogenic bladder, and discuss its pathophysiology.",
+                question: "A 45-year-old woman presents to her gynecologist complaining that she frequently leaks small amounts of urine whenever she laughs, sneezes, or coughs. She has a history of three vaginal deliveries. The pathophysiology of this specific type of incontinence is most directly related to which of the following?",
+                options: {
+                    A: "A lesion in the pontine micturition center",
+                    B: "Autonomic neuropathy associated with diabetes",
+                    C: "Detrusor muscle overactivity causing sudden compelling urges",
+                    D: "Obstruction of the bladder outlet by pelvic organ prolapse",
+                    E: "Weakness of the pubocervical fascia leading to urethral hypermobility"
+                },
+                correctAnswer: "E",
+                rationale: "The patient has stress urinary incontinence. Stress incontinence is the involuntary loss of urine related to urethral sphincter failure associated with increased intra-abdominal pressure (laughing, coughing, sneezing). This is caused by weakness of the pubocervical fascia (loss of pelvic floor support), leading to urethral hypermobility and an inability to maintain closure pressure.",
+                source: "Bladder Dysfunction PDF, slide 18: 'Types: Stress: involuntary loss of urine related to urethral sphincter failure associated with intra-abdominal pressure... Weakness of pubocervical fascia (loss of pelvic floor support) -> urethral hypermobility -> inability to maintain closure pressure during \"stress\"'"
+            },
+            {
+                section: "Bladder Dysfunction",
+                fullLO: "LO1: Define urinary incontinence and neurogenic bladder, and discuss its pathophysiology.",
+                question: "A 28-year-old man suffers a severe spinal cord injury at the T10 level. After the initial period of spinal shock resolves, urodynamic studies are performed. Based on the level of his neurological lesion, what pattern of neurogenic bladder dysfunction is he most likely to exhibit?",
+                options: {
+                    A: "Areflexic detrusor activity with a large, low-pressure bladder",
+                    B: "Flaccid bladder with high post-void residual and overflow incontinence",
+                    C: "Hyperreflexic detrusor activity with a small, high-pressure bladder",
+                    D: "Normal voluntary micturition with stress incontinence",
+                    E: "Overflow incontinence secondary to peripheral neuropathy"
+                },
+                correctAnswer: "C",
+                rationale: "A spinal cord lesion above S2–S4 (such as at T10) results in an upper motor neuron (UMN) lesion, causing a reflexic or spastic neurogenic bladder. This is characterized by hyperreflexic detrusor activity, a small bladder size, high pressure, and urge incontinence. Flaccid (areflexic) bladders occur with lesions at or below S2-S4.",
+                source: "Bladder Dysfunction PDF, slide 14: 'Reflexic vs Areflexic Neurogenic Bladder ... Reflexic (UMN) [Spastic] | Lesion level: Above S2–S4 | Detrusor activity: Hyperreflexic | Bladder size: Small | Pressure: High'"
+            },
+            {
+                section: "Bladder Dysfunction",
+                fullLO: "LO2: Outline the diagnosis and management of urinary incontinence and neurogenic bladder.",
+                question: "A 60-year-old woman is diagnosed with overactive bladder (OAB) and urge incontinence. She is prescribed oxybutynin. The physician explains that this medication works by blocking specific neurotransmitter receptors to reduce bladder smooth muscle contractions. Which of the following side effects should the physician counsel the patient to expect while taking this medication?",
+                options: {
+                    A: "Chronic cough and angioedema",
+                    B: "Diarrhea and excessive tearing",
+                    C: "Dry mouth, dry eyes, and constipation",
+                    D: "Hypertension and rhinorrhea",
+                    E: "Bradycardia and wheezing"
+                },
+                correctAnswer: "C",
+                rationale: "Oxybutynin is an anticholinergic (antimuscarinic) medication used to treat OAB. The classic side effects of systemic anticholinergic therapy include dry mouth, dry eyes, constipation, and cognitive dysfunction.",
+                source: "Bladder Dysfunction PDF, slide 25: 'Medications for OAB • Anticholinergic (AKA antimuscarinic) Oxybutinyn (Ditropan) ... Side Effects* -Dry mouth -Dry eyes -Constipation -Cognitive dysfunction'"
+            },
+            {
+                section: "Bladder Dysfunction",
+                fullLO: "LO2: Outline the diagnosis and management of urinary incontinence and neurogenic bladder.",
+                question: "A 35-year-old woman with multiple sclerosis is diagnosed with an areflexic (flaccid) neurogenic bladder resulting in significant urinary retention. Which of the following is the preferred initial management strategy for emptying the bladder in this patient?",
+                options: {
+                    A: "Augmentation cystoplasty",
+                    B: "Botulinum toxin A injection into the urethral sphincter",
+                    C: "Intermittent self-catheterization 4-6 times daily",
+                    D: "Oral beta-3 agonist therapy (mirabegron)",
+                    E: "Sacral neuromodulation"
+                },
+                correctAnswer: "C",
+                rationale: "For patients with an areflexic/flaccid neurogenic bladder (who cannot empty their bladder), the preferred management is intermittent self-catheterization, performed 4-6 times daily, to empty the bladder and avoid over-distention.",
+                source: "Bladder Dysfunction PDF, slide 16: 'Neurogenic bladder treatment • Emptying the bladder (areflexic/flaccid neurogenic bladder) Intermittent self-catheterization preferred. 4-6 times daily. Avoid over-distending the bladder'"
+            },
+            {
+                section: "Bladder Dysfunction",
+                fullLO: "LO3: Discuss the causes, diagnostic evaluation and prevention of recurrent urinary tract infections.",
+                question: "A 25-year-old healthy man presents to his primary care physician with symptoms of dysuria, frequency, and suprapubic pain. A urine culture confirms a urinary tract infection (UTI). He has no prior history of UTIs. According to current guidelines, how should this patient's UTI be diagnostically classified and evaluated?",
+                options: {
+                    A: "It is classified as an uncomplicated cystitis and requires no further workup.",
+                    B: "It is classified as complicated, and a urologic evaluation is recommended.",
+                    C: "It is assumed to be STI-related urethritis, and imaging is contraindicated.",
+                    D: "It represents recurrent UTI and warrants prophylactic antibiotics.",
+                    E: "It should be treated empirically without checking a post-void residual."
+                },
+                correctAnswer: "B",
+                rationale: "All UTIs in men are considered complicated due to the high risk of an underlying anatomic abnormality. Therefore, a urologic evaluation is recommended even after a first infection.",
+                source: "Bladder Dysfunction PDF, slides 36 & 38: 'Symptoms and Exam ... All UTIs in men are considered complicated, due to high risk of underlying anatomic abnormality' AND 'Diagnostic Evaluation--Men • All UTIs in men are considered complicated • Urologic evaluation recommended even after a first infection.'"
+            },
+            {
+                section: "Bladder Dysfunction",
+                fullLO: "LO3: Discuss the causes, diagnostic evaluation and prevention of recurrent urinary tract infections.",
+                question: "A 68-year-old postmenopausal woman seeks advice for preventing recurrent urinary tract infections (rUTIs). She has had three culture-proven UTIs in the past 12 months. She has no anatomical abnormalities or incontinence. According to evidence-based strategies for preventing UTIs, which of the following interventions has a \"clear recommendation\" specifically to address the risk factors associated with her age group?",
+                options: {
+                    A: "Continuous antimicrobial prophylaxis with TMP/SMX",
+                    B: "Daily intake of probiotics",
+                    C: "Methenamine hippurate",
+                    D: "Vaginal estrogen (e.g., vaginal rings or cream)",
+                    E: "Weight loss and smoking cessation"
+                },
+                correctAnswer: "D",
+                rationale: "Postmenopausal estrogen deficiency is a major risk factor for UTIs in older women. Vaginal estrogen has a clear recommendation for the prevention of recurrent UTIs in this population. (Continuous antimicrobial prophylaxis is a clinical review option that carries risks of resistance, and probiotics have \"no recommendation\").",
+                source: "Bladder Dysfunction PDF, slide 39: 'Table 1. Strategies to Prevent UTIs ... Strategy: Vaginal estrogen | Level of evidence: Clear recommendation | Intervention: Vaginal estrogen, such as vaginal rings, vaginal insert or vaginal cream'"
+            },
+
+            // --- Section 4: Non-Glomerular Disease of the Kidney ---
+            {
+                section: "Non-Glomerular Disease of the Kidney",
+                fullLO: "LO1: Discuss the pathology related to diseases affecting renal tubules.",
+                question: "A 30-year-old woman is admitted to the hospital with high fever, flank pain, and dysuria. A urine microscopic examination reveals white cell casts. A diagnosis of acute pyelonephritis is made. If a renal biopsy were performed, which of the following histological findings would be most prominent?",
+                options: {
+                    A: "Detachment of tubular epithelial cells into the lumen",
+                    B: "Eosinophil-rich interstitial inflammation",
+                    C: "Fibroelastic hyperplasia of the arcuate arteries",
+                    D: "Neutrophils within the collecting tubules",
+                    E: "Pink, glassy colloid casts resembling thyroid tissue"
+                },
+                correctAnswer: "D",
+                rationale: "Acute pyelonephritis is an acute inflammation of the kidney and renal pelvis caused by bacteria (most commonly E. coli). Its histologic hallmark is the presence of neutrophils within the collecting tubules, which leads to the formation of white cell casts shed into the urine.",
+                source: "Non-Glomerular Disease of the Kidney PDF, slide 6: 'ACUTE PYELONEPHRITIS ... Histology: Neutrophils found within collecting tubules. Leading to formation of white cell casts within the tubules which are shed into urine and seen on urinalysis'"
+            },
+            {
+                section: "Non-Glomerular Disease of the Kidney",
+                fullLO: "LO1: Discuss the pathology related to diseases affecting renal tubules.",
+                question: "A 65-year-old man undergoes emergent abdominal aortic aneurysm repair complicated by severe hemorrhagic shock. Two days postoperatively, his urine output drops precipitously, and he is diagnosed with acute renal failure. This condition is primarily caused by ischemic damage to the most sensitive parts of the nephron. A renal biopsy in this patient would most likely demonstrate:",
+                options: {
+                    A: "Crescent formation in the glomeruli",
+                    B: "Detachment of tubular epithelial cells into the tubular lumens",
+                    C: "Fibrinoid necrosis of the arterioles",
+                    D: "Extensive mononuclear inflammation of lymphocytes and plasma cells",
+                    E: "Normal tubular epithelium with massive interstitial eosinophils"
+                },
+                correctAnswer: "B",
+                rationale: "The patient has Acute Tubular Necrosis (ATN) secondary to severe hypotension/ischemia. ATN is the most common cause of reversible acute renal failure. Histologically, it presents as necrosis of tubule segments, interstitial edema, and detachment of tubular epithelial cells into the tubular lumens (while the glomeruli are spared).",
+                source: "Non-Glomerular Disease of the Kidney PDF, slides 23 & 24: 'ACUTE TUBULAR NECROSIS ... Ischemic(Anoxic) form Secondary to severe hypotension, massive hemorrhage ... Histology: Necrosis of segments of tubules and interstitial edema. Detachment of tubular epithelial cells into tubular lumens'"
+            },
+            {
+                section: "Non-Glomerular Disease of the Kidney",
+                fullLO: "LO2: Compare and contrast diseases involving renal blood vessels.",
+                question: "A 55-year-old man with a 15-year history of poorly controlled essential hypertension (typically 150/90 mm Hg) dies of an unrelated myocardial infarction. At autopsy, his kidneys are symmetrically smaller with a fine granularity on the cortical surface. Microscopic evaluation of the renal arterioles reveals a pink, glassy thickening of the wall that narrows the lumen. What is the correct term for this specific histological change?",
+                options: {
+                    A: "Fibrinoid necrosis",
+                    B: "Fibroelastic hyperplasia",
+                    C: "Hyaline arteriolosclerosis",
+                    D: "Hyperplastic arteriolitis",
+                    E: "Interstitial fibrosis"
+                },
+                correctAnswer: "C",
+                rationale: "The renal changes in benign hypertension (Benign Nephrosclerosis) include symmetrically smaller kidneys with finely granular surfaces. Histologically, this is characterized by hyaline arteriolosclerosis—a pink, glassy thickening of the arteriolar wall that narrows the lumen and leads to ischemic changes.",
+                source: "Non-Glomerular Disease of the Kidney PDF, slide 34: 'BENIGN NEPHROSCLEROSIS ... Histology: Hyaline arteriolosclerosis. Pink glassy thickening of arteriolar wall. Leads to narrowing of arteriolar lumen'"
+            },
+            {
+                section: "Non-Glomerular Disease of the Kidney",
+                fullLO: "LO2: Compare and contrast diseases involving renal blood vessels.",
+                question: "A 45-year-old man presents to the emergency department with a severe headache and a blood pressure of 230/140 mm Hg. He is in hypertensive emergency. A renal biopsy from a patient with this condition would classically show rupture of arterioles causing tiny cortical hemorrhages, along with which of the following specific histological findings in the interlobular arteries?",
+                options: {
+                    A: "Concentric \"onion-skin\" proliferation of smooth muscle cells",
+                    B: "Dense deposition of amyloid fibrils",
+                    C: "Hyaline arteriolosclerosis",
+                    D: "Pink, glassy colloid casts in the tubules",
+                    E: "Uniform thickening of the basement membrane with subepithelial spikes"
+                },
+                correctAnswer: "A",
+                rationale: "Malignant nephrosclerosis (seen in malignant hypertension, diastolic BP >120) is characterized grossly by \"flea-bitten\" petechiae. Histologically, it shows fibrinoid necrosis of arterioles and hyperplastic arteriolitis, which consists of the proliferation of smooth muscle cells forming a concentric \"onion-skin\" appearance that markedly narrows the lumen.",
+                source: "Non-Glomerular Disease of the Kidney PDF, slide 38: 'MALIGNANT HYPERTENSION MALIGNANT NEPHROSCLEROSIS ... Histology: Fibrinoid necrosis of arterioles. Hyperplastic arteriolitis: Proliferation of smooth muscle cells in interlobular arteries leading to onion-skin appearance or concentric arrangement of cells'"
+            },
+            {
+                section: "Non-Glomerular Disease of the Kidney",
+                fullLO: "LO3: Discuss the pathology related to renal cystic diseases.",
+                question: "A 40-year-old man presents with chronic flank pain and hematuria. Ultrasound shows massive, enormous kidneys bilaterally, with the architecture almost entirely replaced by large cysts. His blood pressure is 160/100 mm Hg. This patient's condition, caused by a defective gene on the short arm of chromosome 16, places him at up to a 30% increased risk for developing which of the following life-threatening conditions?",
+                options: {
+                    A: "Acute papillary necrosis",
+                    B: "Calcium oxalate staghorn calculi",
+                    C: "Renal cell carcinoma",
+                    D: "Saccular (berry) aneurysms of the circle of Willis",
+                    E: "Transitional cell carcinoma of the bladder"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has Autosomal Dominant (Adult) Polycystic Kidney Disease (ADPKD). ADPKD features massive kidneys replaced by cysts, is strongly associated with benign hypertension (75%), and up to 30% of cases are associated with saccular (berry) aneurysms of the circle of Willis, which can cause fatal subarachnoid hemorrhages.",
+                source: "Non-Glomerular Disease of the Kidney PDF, slide 45: 'Autosomal Dominant Adult Polycystic Kidney Disease ... Defective gene on short arm of chromosome 16 ... Up to 30% cases associated with saccular (berry) aneurysms of the circle of Willis'"
+            },
+            {
+                section: "Non-Glomerular Disease of the Kidney",
+                fullLO: "LO3: Discuss the pathology related to renal cystic diseases.",
+                question: "A newborn infant dies shortly after birth due to severe pulmonary hypoplasia. Physical examination reveals an \"old man\" facies, a flattened nose, and rocker bottom feet. Autopsy shows bilaterally enlarged kidneys with numerous small cysts originating from the collecting ducts. This specific hereditary form of cystic disease is inherited in which of the following patterns?",
+                options: {
+                    A: "Autosomal dominant",
+                    B: "Autosomal recessive",
+                    C: "Mitochondrial",
+                    D: "X-linked dominant",
+                    E: "X-linked recessive"
+                },
+                correctAnswer: "B",
+                rationale: "The clinical picture of oligohydramnios sequence (Potter phenotype: old man facies, flat nose, rocker bottom feet, pulmonary hypoplasia) combined with bilaterally enlarged kidneys featuring numerous small cysts originating from the collecting ducts describes Autosomal Recessive (Childhood) Polycystic Kidney Disease (ARPKD).",
+                source: "Non-Glomerular Disease of the Kidney PDF, slides 47 & 51: 'Hereditary Form of Cystic Disease of the Newborn Kidney: Autosomal recessive (childhood) polycystic kidney disease. Bilateral involvement. Numerous small cysts originating from collecting ducts. Oligohydramnios' AND 'Oligohydramnios Sequence Potter phenotype Old man facies... Rocker bottom feet'"
+            },
+            {
+                section: "Non-Glomerular Disease of the Kidney",
+                fullLO: "LO4: Compare and contrast the various types of renal stones.",
+                question: "A 35-year-old woman with a history of recurrent urinary tract infections presents with severe back pain. Imaging shows a massive, branched radiopaque structure filling the entire renal pelvis and calyces. Urine cultures grow Proteus vulgaris, a urea-splitting organism. This large \"staghorn\" calculus is most likely composed of which of the following substances?",
+                options: {
+                    A: "Calcium oxalate",
+                    B: "Calcium phosphate",
+                    C: "Cystine",
+                    D: "Magnesium ammonium phosphate",
+                    E: "Uric acid"
+                },
+                correctAnswer: "D",
+                rationale: "Staghorn calculi are massive, branched stones that fill the renal pelvis. They are usually composed of magnesium ammonium phosphate (\"triple phosphate\" stones) and are classically associated with alkaline urine caused by recurrent UTIs with urea-splitting organisms like Proteus vulgaris.",
+                source: "Non-Glomerular Disease of the Kidney PDF, slide 52: 'URINARY OUTFLOW TRACT OBSTRUCTION DUE TO STONES ... 15% magnesium, ammonium, and calcium phosphates “triple phosphate stones” associated with UTI by urea splitting organisms Proteus vulgaris ... leading to large branched stone referred to as a staghorn calculus and usually composed of magnesium ammonium phosphate'"
+            },
+            {
+                section: "Non-Glomerular Disease of the Kidney",
+                fullLO: "LO4: Compare and contrast the various types of renal stones.",
+                question: "A 45-year-old man presents to the emergency department with acute, excruciating, colicky flank pain radiating to his groin. A non-contrast CT scan demonstrates a small 4-mm stone in the right ureter. Based on the epidemiology of urolithiasis, this patient's stone is most likely composed of which of the following?",
+                options: {
+                    A: "Calcium oxalate and/or calcium phosphate",
+                    B: "Cystine",
+                    C: "Magnesium ammonium phosphate",
+                    D: "Pure struvite",
+                    E: "Uric acid"
+                },
+                correctAnswer: "A",
+                rationale: "Calcium-based stones (calcium oxalate and/or calcium phosphate) are by far the most common type of renal stones, accounting for 80% of all urolithiasis cases. They are typically small and unilateral.",
+                source: "Non-Glomerular Disease of the Kidney PDF, slide 52: 'Renal stones (Urolithiasis) • 80% calcium oxalate and/or calcium phosphate' AND 'Morphology • Unilateral small stones in 80% of patients'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    if (btnText.includes("Fluid and Electrolyte Clinical Correlations")) btnText = "Fluid & Electrolyte";
+                    if (btnText.includes("Sepsis")) btnText = "Sepsis";
+                    if (btnText.includes("Bladder Dysfunction")) btnText = "Bladder Dysfunction";
+                    if (btnText.includes("Non-Glomerular Disease of the Kidney")) btnText = "Non-Glomerular Disease";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
